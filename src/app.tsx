@@ -1,10 +1,12 @@
 import process from "node:process";
 import { Box, render, Spacer, Static, Text, Transform, useApp, useFocus, useFocusManager, useInput, useStderr, useStdin, useStdout } from "ink";
 import React, { useEffect, useState } from "react";
+import packageJson from "../package.json" assert { type: "json" };
 import { Colors } from "./ui/colors.js";
 import { Footer } from "./ui/components/Footer.js";
 import { Header } from "./ui/components/Header.js";
 import { useGitBranchName } from "./ui/hooks/useGitBranchName.js";
+import { useTerminalSize } from "./ui/hooks/useTerminalSize.js";
 
 interface ExampleProps {
   onBack: () => void;
@@ -273,6 +275,10 @@ function App() {
   const { exit } = useApp();
   const currentDir = process.cwd();
   const branchName = useGitBranchName(currentDir);
+  const { columns: terminalWidth } = useTerminalSize();
+
+  // 计算主内容区域宽度
+  const contentWidth = Math.floor(terminalWidth * 0.9);
 
   useInput((input, key) => {
     if (view !== "menu") {
@@ -329,25 +335,51 @@ function App() {
   }
 
   return (
-    <Box flexDirection="column" width="90%">
-      <Static items={[<Header key="header" />]}>
-        {item => item}
-      </Static>
-      <Box flexDirection="column" borderStyle="round" borderColor={Colors.AccentBlue} padding={1}>
-        <Text>Welcome to boot-ink! Use arrow keys to navigate, Enter to select.</Text>
+    <>
+      <Box flexDirection="column" width={contentWidth}>
+        <Static items={[<Header key="header" version={`v${packageJson.version}`} />]}>
+          {item => item}
+        </Static>
 
-        <Box flexDirection="column" marginTop={1}>
-          {menuItems.map((item, index) => (
-            <Text key={index} color={selectedIndex === index ? Colors.AccentCyan : Colors.Foreground}>
-              {selectedIndex === index ? "> " : "  "}
-              {item}
-            </Text>
-          ))}
+        {/* 主内容区域 */}
+        <Box
+          flexDirection="column"
+          borderStyle="round"
+          borderColor={Colors.AccentBlue}
+          padding={1}
+          marginBottom={1}
+        >
+          <Box marginBottom={1}>
+            <Text bold color={Colors.AccentCyan}>Welcome to boot-ink!</Text>
+            <Spacer />
+            <Text dimColor>Use arrow keys to navigate, Enter to select</Text>
+          </Box>
+
+          {/* 菜单项容器 */}
+          <Box flexDirection="column">
+            {menuItems.map((item, index) => (
+              <Box
+                key={index}
+                paddingX={1}
+                paddingY={0}
+                marginY={0}
+              >
+                <Text
+                  color={selectedIndex === index ? Colors.AccentCyan : Colors.Foreground}
+                  bold={selectedIndex === index}
+                  underline={selectedIndex === index}
+                >
+                  {selectedIndex === index ? `› ${item}` : `  ${item}`}
+                </Text>
+              </Box>
+            ))}
+          </Box>
         </Box>
-
-        <Footer targetDir={currentDir} branchName={branchName} />
       </Box>
-    </Box>
+
+      {/* 页脚 */}
+      <Footer targetDir={currentDir} branchName={branchName} />
+    </>
   );
 }
 

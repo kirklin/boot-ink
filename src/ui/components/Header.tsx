@@ -7,10 +7,12 @@ import { useTerminalSize } from "../hooks/useTerminalSize.js";
 
 interface HeaderProps {
   customAsciiArt?: string; // For user-defined ASCII art
+  version?: string;
 }
 
 export const Header: React.FC<HeaderProps> = ({
   customAsciiArt,
+  version = "v1.0.0",
 }) => {
   const { columns: terminalWidth } = useTerminalSize();
 
@@ -27,6 +29,7 @@ export const Header: React.FC<HeaderProps> = ({
 
   return (
     <Box
+      flexDirection="column"
       marginBottom={1}
       alignItems="flex-start"
       width={artWidth}
@@ -41,6 +44,9 @@ export const Header: React.FC<HeaderProps> = ({
         : (
             <Text>{displayTitle}</Text>
           )}
+      <Box width="100%" justifyContent="flex-end" marginTop={-1}>
+        <Text color={Colors.Gray}>{version}</Text>
+      </Box>
     </Box>
   );
 };

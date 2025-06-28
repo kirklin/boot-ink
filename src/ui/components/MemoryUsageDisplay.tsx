@@ -12,9 +12,15 @@ export const MemoryUsageDisplay: React.FC = () => {
     const updateMemory = () => {
       const usage = process.memoryUsage().rss;
       setMemoryUsage(formatMemoryUsage(usage));
-      setMemoryUsageColor(
-        usage >= 2 * 1024 * 1024 * 1024 ? Colors.AccentRed : Colors.Gray,
-      );
+
+      // 根据内存使用情况设置颜色
+      if (usage >= 2 * 1024 * 1024 * 1024) {
+        setMemoryUsageColor(Colors.AccentRed);
+      } else if (usage >= 1 * 1024 * 1024 * 1024) {
+        setMemoryUsageColor(Colors.AccentYellow);
+      } else {
+        setMemoryUsageColor(Colors.Gray);
+      }
     };
     const intervalId = setInterval(updateMemory, 2000);
     updateMemory(); // Initial update
@@ -22,7 +28,7 @@ export const MemoryUsageDisplay: React.FC = () => {
   }, []);
 
   return (
-    <Box>
+    <Box marginLeft={2}>
       <Text color={Colors.Gray}>| </Text>
       <Text color={memoryUsageColor}>{memoryUsage}</Text>
     </Box>
