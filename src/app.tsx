@@ -1,5 +1,10 @@
+import process from "node:process";
 import { Box, render, Spacer, Static, Text, Transform, useApp, useFocus, useFocusManager, useInput, useStderr, useStdin, useStdout } from "ink";
 import React, { useEffect, useState } from "react";
+import { Colors } from "./ui/colors.js";
+import { Footer } from "./ui/components/Footer.js";
+import { Header } from "./ui/components/Header.js";
+import { useGitBranchName } from "./ui/hooks/useGitBranchName.js";
 
 interface ExampleProps {
   onBack: () => void;
@@ -26,8 +31,8 @@ const TextExample: React.FC<ExampleProps> = ({ onBack }) => {
 
   return (
     <Box flexDirection="column">
-      <Text bold color="yellow">{"<Text> Component Examples"}</Text>
-      <Text color="green">I am green</Text>
+      <Text bold color={Colors.AccentYellow}>{"<Text> Component Examples"}</Text>
+      <Text color={Colors.AccentGreen}>I am green</Text>
       <Text color="black" backgroundColor="white">I am black on white</Text>
       <Text color="#ffffff">I am white</Text>
       <Text bold>I am bold</Text>
@@ -35,8 +40,8 @@ const TextExample: React.FC<ExampleProps> = ({ onBack }) => {
       <Text underline>I am underline</Text>
       <Text strikethrough>I am strikethrough</Text>
       <Text inverse>I am inversed</Text>
-      <Box marginTop={1} borderStyle="round" borderColor="cyan">
-        <Text color="cyan">Press Enter to go back</Text>
+      <Box marginTop={1} borderStyle="round" borderColor={Colors.AccentCyan}>
+        <Text color={Colors.AccentCyan}>Press Enter to go back</Text>
       </Box>
     </Box>
   );
@@ -51,15 +56,15 @@ const BoxExample: React.FC<ExampleProps> = ({ onBack }) => {
 
   return (
     <Box flexDirection="column">
-      <Text bold color="yellow">{"<Box> Component Examples"}</Text>
+      <Text bold color={Colors.AccentYellow}>{"<Box> Component Examples"}</Text>
       <Box borderStyle="round" padding={1} margin={1}>
         <Text>This is a box.</Text>
       </Box>
-      <Box borderStyle="double" borderColor="green" paddingX={3}>
+      <Box borderStyle="double" borderColor={Colors.AccentGreen} paddingX={3}>
         <Text>This box has custom border and padding.</Text>
       </Box>
-      <Box marginTop={1} borderStyle="round" borderColor="cyan">
-        <Text color="cyan">Press Enter to go back</Text>
+      <Box marginTop={1} borderStyle="round" borderColor={Colors.AccentCyan}>
+        <Text color={Colors.AccentCyan}>Press Enter to go back</Text>
       </Box>
     </Box>
   );
@@ -74,14 +79,14 @@ const SpacerExample: React.FC<ExampleProps> = ({ onBack }) => {
 
   return (
     <Box flexDirection="column">
-      <Text bold color="yellow">{"<Spacer> Component Example"}</Text>
+      <Text bold color={Colors.AccentYellow}>{"<Spacer> Component Example"}</Text>
       <Box>
         <Text>Left</Text>
         <Spacer />
         <Text>Right</Text>
       </Box>
-      <Box marginTop={1} borderStyle="round" borderColor="cyan">
-        <Text color="cyan">Press Enter to go back</Text>
+      <Box marginTop={1} borderStyle="round" borderColor={Colors.AccentCyan}>
+        <Text color={Colors.AccentCyan}>Press Enter to go back</Text>
       </Box>
     </Box>
   );
@@ -108,14 +113,14 @@ const CounterExample: React.FC<ExampleProps> = ({ onBack }) => {
 
   return (
     <Box flexDirection="column">
-      <Text bold color="yellow">{"<Counter> and useEffect Example"}</Text>
-      <Text color="green">
+      <Text bold color={Colors.AccentYellow}>{"<Counter> and useEffect Example"}</Text>
+      <Text color={Colors.AccentGreen}>
         {stars}
         {" "}
         stars received! ✨
       </Text>
-      <Box marginTop={1} borderStyle="round" borderColor="cyan">
-        <Text color="cyan">Press Enter to go back</Text>
+      <Box marginTop={1} borderStyle="round" borderColor={Colors.AccentCyan}>
+        <Text color={Colors.AccentCyan}>Press Enter to go back</Text>
       </Box>
     </Box>
   );
@@ -153,19 +158,19 @@ const StaticExample: React.FC<ExampleProps> = ({ onBack }) => {
 
   return (
     <Box flexDirection="column">
-      <Text bold color="yellow">{"<Static> Component Example"}</Text>
+      <Text bold color={Colors.AccentYellow}>{"<Static> Component Example"}</Text>
       <Static items={tasks}>
         {(task: { id: number; title: string }) => (
           <Box key={task.id}>
-            <Text color="green">
+            <Text color={Colors.AccentGreen}>
               ✔
               {task.title}
             </Text>
           </Box>
         )}
       </Static>
-      <Box marginTop={1} borderStyle="round" borderColor="cyan">
-        <Text color="cyan">Press Enter to go back</Text>
+      <Box marginTop={1} borderStyle="round" borderColor={Colors.AccentCyan}>
+        <Text color={Colors.AccentCyan}>Press Enter to go back</Text>
       </Box>
     </Box>
   );
@@ -180,12 +185,12 @@ const TransformExample: React.FC<ExampleProps> = ({ onBack }) => {
 
   return (
     <Box flexDirection="column">
-      <Text bold color="yellow">{"<Transform> Component Example"}</Text>
+      <Text bold color={Colors.AccentYellow}>{"<Transform> Component Example"}</Text>
       <Transform transform={(output: string) => output.toUpperCase()}>
         <Text>This text will be transformed to uppercase.</Text>
       </Transform>
-      <Box marginTop={1} borderStyle="round" borderColor="cyan">
-        <Text color="cyan">Press Enter to go back</Text>
+      <Box marginTop={1} borderStyle="round" borderColor={Colors.AccentCyan}>
+        <Text color={Colors.AccentCyan}>Press Enter to go back</Text>
       </Box>
     </Box>
   );
@@ -198,7 +203,7 @@ interface FocusableItemProps {
 
 const FocusableItem: React.FC<FocusableItemProps> = ({ label, isFocused }) => (
   <Box>
-    <Text color={isFocused ? "cyan" : "white"}>{label}</Text>
+    <Text color={isFocused ? Colors.AccentCyan : Colors.Foreground}>{label}</Text>
   </Box>
 );
 
@@ -220,15 +225,15 @@ const FocusExample: React.FC<ExampleProps> = ({ onBack }) => {
 
   return (
     <Box flexDirection="column">
-      <Text bold color="yellow">useFocus & useFocusManager Example</Text>
+      <Text bold color={Colors.AccentYellow}>useFocus & useFocusManager Example</Text>
       <Text>Use Tab and Shift+Tab to switch focus between items.</Text>
       <Box flexDirection="column" marginTop={1}>
         <FocusableItem label="First Input" isFocused={isFirstFocused} />
         <FocusableItem label="Second Input" isFocused={isSecondFocused} />
         <FocusableItem label="Third Input" isFocused={isThirdFocused} />
       </Box>
-      <Box marginTop={1} borderStyle="round" borderColor="cyan">
-        <Text color="cyan">Press Enter to go back</Text>
+      <Box marginTop={1} borderStyle="round" borderColor={Colors.AccentCyan}>
+        <Text color={Colors.AccentCyan}>Press Enter to go back</Text>
       </Box>
     </Box>
   );
@@ -251,11 +256,11 @@ const StdioExample: React.FC<ExampleProps> = ({ onBack }) => {
 
   return (
     <Box flexDirection="column">
-      <Text bold color="yellow">useStdout & useStderr Example</Text>
+      <Text bold color={Colors.AccentYellow}>useStdout & useStderr Example</Text>
       <Text>Check your terminal output. You should see messages on both stdout and stderr.</Text>
       <Text dimColor>These messages are written outside of Ink's render loop.</Text>
-      <Box marginTop={1} borderStyle="round" borderColor="cyan">
-        <Text color="cyan">Press Enter to go back</Text>
+      <Box marginTop={1} borderStyle="round" borderColor={Colors.AccentCyan}>
+        <Text color={Colors.AccentCyan}>Press Enter to go back</Text>
       </Box>
     </Box>
   );
@@ -266,6 +271,8 @@ function App() {
   const [view, setView] = useState("menu");
   const { isRawModeSupported } = useStdin();
   const { exit } = useApp();
+  const currentDir = process.cwd();
+  const branchName = useGitBranchName(currentDir);
 
   useInput((input, key) => {
     if (view !== "menu") {
@@ -322,23 +329,23 @@ function App() {
   }
 
   return (
-    <Box flexDirection="column" padding={2} borderColor="cyan" borderStyle="round">
-      <Box marginBottom={1}>
-        <Text bold>Ink by Example - by Kirk Lin</Text>
-      </Box>
-      <Text>Welcome to boot-ink! Use arrow keys to navigate, Enter to select.</Text>
+    <Box flexDirection="column" width="90%">
+      <Static items={[<Header key="header" />]}>
+        {item => item}
+      </Static>
+      <Box flexDirection="column" borderStyle="round" borderColor={Colors.AccentBlue} padding={1}>
+        <Text>Welcome to boot-ink! Use arrow keys to navigate, Enter to select.</Text>
 
-      <Box flexDirection="column" marginTop={1}>
-        {menuItems.map((item, index) => (
-          <Text key={index} color={selectedIndex === index ? "cyan" : "white"}>
-            {selectedIndex === index ? "> " : "  "}
-            {item}
-          </Text>
-        ))}
-      </Box>
+        <Box flexDirection="column" marginTop={1}>
+          {menuItems.map((item, index) => (
+            <Text key={index} color={selectedIndex === index ? Colors.AccentCyan : Colors.Foreground}>
+              {selectedIndex === index ? "> " : "  "}
+              {item}
+            </Text>
+          ))}
+        </Box>
 
-      <Box marginTop={2} borderTopColor="gray" borderTop>
-        <Text dimColor>Author: Kirk Lin (https://github.com/kirklin)</Text>
+        <Footer targetDir={currentDir} branchName={branchName} />
       </Box>
     </Box>
   );
