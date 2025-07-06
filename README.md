@@ -7,6 +7,8 @@
 [![License][license-src]][license-href]
 [![javascript_code style][code-style-image]][code-style-url]
 
+![boot-ink](./README.assets/boot-ink.png)
+
 _description_
 
 > **Note**:
